@@ -1,2 +1,2 @@
-# programming_languages
-My quick reference guide
+# reference guide
+my reference guide for o.s. and programming.
