@@ -1,0 +1,2 @@
+# daemon and process management
+systemctl [ start | stop | restart | status ] [ process_name ]
