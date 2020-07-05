@@ -1,0 +1,75 @@
+***********
+#user and group management
+***********
+
+#user management
+-add/remove
+useradd username
+userdel username
+-set password
+passwd username
+-system account
+useradd -r -M username
+-add user to group(s)
+***if -a is omitted, current groups will be replaced by list
+usermod -aG groupname1,groupname2,groupname3... username
+
+-remove user from groups(s)
+***has to be done at a time
+gpasswd -d username groupname1
+gpasswd -d username groupname2
+gpasswd -d username groupname3
+
+#group management
+-create/remove
+groupadd groupname
+-see membership
+groups username
+
+#example
+***BEFORE_ADD***
+$ groups test_acct
+test_acct : test_acct
+$ id test_acct
+uid=1000(test_acct) gid=1000(test_acct) groups=1000(test_acct)
+$ usermod -aG ntp,puppet test_acct
+***AFTER_ADD***
+$ groups test_acct
+test_acct : test_acct ntp puppet
+$ id test_acct
+uid=1000(test_acct) gid=1000(test_acct) groups=1000(test_acct),38(ntp),995(puppet)
+***REMOVE***
+$ gpasswd -d test_acct puppet
+Removing user test_acct from group puppet
+$ gpasswd -d test_acct ntp
+Removing user test_acct from group ntp
+***AFTER_REMOVE***
+$ groups test_acct
+test_acct : test_acct
+$ id test_acct
+uid=1000(test_acct) gid=1000(test_acct) groups=1000(test_acct)
+
+#script
+#!/bin/bash
+echo "***BEFORE_ADD***"
+echo "$ groups test_acct"
+groups test_acct
+echo "$ id test_acct"
+id test_acct
+echo "$ usermod -aG ntp,puppet test_acct"
+usermod -aG ntp,puppet test_acct
+echo "***AFTER_ADD***"
+echo "$ groups test_acct"
+groups test_acct
+echo "$ id test_acct"
+id test_acct
+echo "***REMOVE***"
+echo "$ gpasswd -d test_acct puppet"
+gpasswd -d test_acct puppet
+echo "$ gpasswd -d test_acct ntp"
+gpasswd -d test_acct ntp
+echo "***AFTER_REMOVE***"
+echo "$ groups test_acct"
+groups test_acct
+echo "$ id test_acct"
+id test_acct
