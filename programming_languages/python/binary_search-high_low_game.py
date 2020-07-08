@@ -8,6 +8,7 @@ num_of_guesses = 0
 print("*" * 40)
 print("*" * 8, "Computer Guessing Game", "*" * 8, )
 print("*" * 40)
+high_low = '-'
 
 low = int(input("Enter low number: "))
 high = int(input("Enter high number: "))
@@ -25,7 +26,7 @@ print("Write your number down, I will guess the number in {0} guesses.\n".format
 def guess_a_number(lo, hi):
     return lo + ((hi - lo) // 2)
 
-while (True):
+while (high_low != 'c') and (high != low):
     guess = guess_a_number(low, high)
     guesses.append(guess)
     num_of_guesses += 1
@@ -34,8 +35,7 @@ while (True):
         low = guess + 1
     elif (high_low == 'l'):
         high = guess - 1
-    else:
-        print("See! I told you I can guess the number in {} guesses!".format(max_of_guesses))
-        print("Number of guesses: ", num_of_guesses)
-        print("Computer guesses were: ", guesses)
-        break
+else:
+    print("See! I told you I can guess the number in {} guesses!".format(max_of_guesses))
+    print("Number of guesses: ", num_of_guesses)
+    print("Computer guesses were: ", guesses)
