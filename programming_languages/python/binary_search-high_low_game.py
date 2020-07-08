@@ -1,4 +1,6 @@
-#!/Library/Frameworks/Python.framework/Versions/3.6/bin/python3
+#!/usr/local/bin/python3
+#MacOSX
+
 import math
 guess = 0
 guesses = []
