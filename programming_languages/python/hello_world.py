@@ -1,2 +1,3 @@
-#!/usr/bin/python
-print('Hello World!')
+#!/usr/local/bin/python3
+#MACOSX
+# print('Hello World!')
