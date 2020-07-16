@@ -1,0 +1,28 @@
+https://www.interviewbit.com/courses/programming/topics/linked-lists/
+A linked list is a linear data structure where each element is a separate object.
+Linked list elements are not stored at contiguous location; the elements are linked using pointers.
+Each node of a list is made up of two items - the data and a reference to the next node. The last node
+has a reference to null. The entry point into a linked list is called the head of the list.
+It should be noted that head is not a separate node, but the reference to the first node.
+If the list is empty then the head is a null reference.
+
+https://www.interviewbit.com/tutorial/linked-list-implementation/#linked-list-implementation
+Each node has at least:
+1) Data
+2) Pointer to the next node
+*In Java and Python, Linked List can be represented as a class and a Node as a separate class.
+**The LinkedList class contains a reference of Node class type.
+https://www.youtube.com/watch?v=WwfhLC16bis
+
+# Node class
+class Node:
+    # Function to initialize the node object
+    def __init__(self, v):
+        self.val = v  # Assign value
+        self.next = None  # Initialize next as null
+
+# Linked List class
+class ListNode:
+    # Function to initialize the Linked List
+    def __init__(self):
+        self.head = None

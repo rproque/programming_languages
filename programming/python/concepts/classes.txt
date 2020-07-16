@@ -1,0 +1,32 @@
+Classes
+
+Overview
+1) What is a class
+2) Defining a class
+3) Attributes and methods
+4) Creating an object
+5) Accessing object variables and methods
+6) Constructors
+7) Dynamic
+
+1) What is a class
+A class is a template for an object.  An object has attributes such as data or methods.
+Think of a class as the blueprint for a vehicle.  A vehicle has characteristics
+and things you can do with them.
+-Characteristics:
+--color, number of doors, type of vehicle, number of wheels, transmission type
+-Methods:
+--park, neutral, reverse, 2/4wheel drive, roll down window, lock, unlock, open/close
+
+Defining a class of car helps us to create objects of type car.  Each object will then have
+consistent characteristics and methods names.
+
+2) Defining a class
+class AppClass:
+    '''This is a docstring'''
+    pass
+
+3)
+
+7) Classes are dynamic
+-instance variables can be made on the fly
