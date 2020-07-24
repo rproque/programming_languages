@@ -1,0 +1,41 @@
+************************************
+* Module 1: Build a Static Website *
+************************************
+AWS Services:
+-Cloud9 - Dev Env
+-S3 - host static files
+Learning:
+-create a s3 bucket
+-configure s3 bucket for website hosting
+-upload a s3 bucket policy for user access
+-cp a file from local to a s3 bucket
+
+Steps:
+1) Clone The Mythical Mysfits Workshop Repository
+git clone -b python https://github.com/aws-samples/aws-modern-application-workshop.git
+
+2) Create An S3 Bucket And Configure It For Website Hosting
+example: aws s3 mb s3://REPLACE_ME_BUCKET_NAME
+aws s3 mb s3://mmysfits
+
+3) Set configuration options to enable the bucket to be used for static website hosting.
+This configuration enables the objects in the bucket to be requested using a registered public DNS name for the bucket,
+as well as direct site requests to the base path of the DNS name to a selected website homepage (index.html in most cases)
+example: aws s3 website s3://REPLACE_ME_BUCKET_NAME --index-document index.html
+aws s3 website s3://mmysfits --index-document index.html
+
+4) Update The S3 Bucket Policy
+--Buckets are created as fully private by default.  Change S3 Bucket Policy as needed.
+example: vi ~/environment/aws-modern-application-workshop/module-1/aws-cli/website-bucket-policy.json
+--Add bucket policy to website
+example: aws s3api put-bucket-policy --bucket REPLACE_ME_BUCKET_NAME --policy file://~/environment/aws-modern-application-workshop/module-1/aws-cli/website-bucket-policy.json
+aws s3api put-bucket-policy --bucket mmysfits --policy file://~/environment/aws-modern-application-workshop/module-1/aws-cli/website-bucket-policy.json
+
+5) Publish The Website Content To S3
+example:  aws s3 cp ~/environment/aws-modern-application-workshop/module-1/web/index.html s3://REPLACE_ME_BUCKET_NAME/index.html
+aws s3 cp ~/environment/aws-modern-application-workshop/module-1/web/index.html s3://mmysfits/index.html
+
+6) Browse!
+example: http://REPLACE_ME_BUCKET_NAME.s3-website.REPLACE_ME_YOUR_REGION.amazonaws.com
+https://mmysfits.s3.us-east-2.amazonaws.com/index.html
+***got this from bucket object index.html

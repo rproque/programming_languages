@@ -1,0 +1,55 @@
+***********************************
+* Module 5: Capture User Behavior *
+***********************************
+AWS Services:
+-AWS Cognito: User Pool
+-Amazon API Gateway: Validate registered users to use functions
+
+Learning:
+
+Create a way to better understand how users are interacting with the website and its Mysfits.
+
+1) Create The Streaming Service Code
+A: Create A New CodeCommit Repository
+example:
+aws codecommit create-repository --repository-name MythicalMysfitsStreamingService-Repository
+cd ~/environment/
+git clone {insert the copied cloneValueUrl from above}
+git clone https://git-codecommit.us-east-2.amazonaws.com/v1/repos/MythicalMysfitsStreamingService-Repository
+
+B: Copy The Streaming Service Code Base
+cd ~/environment/MythicalMysfitsStreamingService-Repository/
+cp -r ~/environment/aws-modern-application-workshop/module-5/app/streaming/* .
+cp ~/environment/aws-modern-application-workshop/module-5/cfn/* .
+
+2) Update The Lambda Function Package And Code
+A: Use Pip To Intall Lambda Function Dependencies
+example: pip install requests -t .
+B: Update The Lambda Function Code
+edit: /home/ec2-user/environment/MythicalMysfitsStreamingService-Repository/streamProcessor.py
+C: Push Your Code Into CodeCommit
+git add .
+git commit -m "New stream processing service."
+git push
+
+3) Create the Streaming Service Stack
+A: Create An S3 Bucket For Lambda Function Code Packages
+example: aws s3 mb s3://mmysfits-streaming
+B: Use The SAM CLI To Package Your Code For Lambda
+example: sam package --template-file ./real-time-streaming.yml --output-template-file ./transformed-streaming.yml --s3-bucket replace-with-your-bucket-name
+sam package --template-file ./real-time-streaming.yml --output-template-file ./transformed-streaming.yml --s3-bucket mmysfits-streaming
+C: Deploy The Stack Using AWS CloudFormation
+example: aws cloudformation deploy --template-file /home/ec2-user/environment/MythicalMysfitsStreamingService-Repository/cfn/transformed-streaming.yml --stack-name MythicalMysfitsStreamingStack --capabilities CAPABILITY_IAM
+aws cloudformation deploy --template-file /home/ec2-user/environment/MythicalMysfitsStreamingService-Repository/transformed-streaming.yml --stack-name MythicalMysfitsStreamingStack --capabilities CAPABILITY_IAM
+**had to remove /cfn/ from example
+
+4) Sending Mysfit Profile Clicks to Our New Microservice
+A: Update The Website Content
+edit: ~/environment/aws-modern-application-workshop/module-5/web/index.html
+example: aws cloudformation describe-stacks --stack-name MythicalMysfitsStreamingStack
+retrieve API Gateway Endpoint: aws cloudformation describe-stacks --stack-name MythicalMysfitsStreamingStack
+B: Push The New Site Version to S3
+example: aws s3 cp ~/environment/aws-modern-application-workshop/module-5/web/index.html s3://YOUR-S3-BUCKET/
+aws s3 cp ~/environment/aws-modern-application-workshop/module-5/web/index.html s3://mmysfits-streaming/
+
+5) Workshop Clean-up

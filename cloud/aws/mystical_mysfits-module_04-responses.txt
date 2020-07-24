@@ -1,0 +1,286 @@
+rproque:~/environment $ aws cognito-idp create-user-pool --pool-name MysfitsUserPool --auto-verified-attributes email
+{
+    "UserPool": {
+        "Id": "us-east-2_gbNYZLT2j",
+        "Name": "MysfitsUserPool",
+        "Policies": {
+            "PasswordPolicy": {
+                "MinimumLength": 8,
+                "RequireUppercase": true,
+                "RequireLowercase": true,
+                "RequireNumbers": true,
+                "RequireSymbols": true,
+                "TemporaryPasswordValidityDays": 7
+            }
+        },
+        "LambdaConfig": {},
+        "LastModifiedDate": 1595532830.743,
+        "CreationDate": 1595532830.743,
+        "SchemaAttributes": [
+            {
+                "Name": "sub",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": false,
+                "Required": true,
+                "StringAttributeConstraints": {
+                    "MinLength": "1",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "name",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "given_name",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "family_name",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "middle_name",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "nickname",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "preferred_username",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "profile",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "picture",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "website",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "email",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "email_verified",
+                "AttributeDataType": "Boolean",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false
+            },
+            {
+                "Name": "gender",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "birthdate",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "10",
+                    "MaxLength": "10"
+                }
+            },
+            {
+                "Name": "zoneinfo",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "locale",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "phone_number",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "phone_number_verified",
+                "AttributeDataType": "Boolean",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false
+            },
+            {
+                "Name": "address",
+                "AttributeDataType": "String",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "StringAttributeConstraints": {
+                    "MinLength": "0",
+                    "MaxLength": "2048"
+                }
+            },
+            {
+                "Name": "updated_at",
+                "AttributeDataType": "Number",
+                "DeveloperOnlyAttribute": false,
+                "Mutable": true,
+                "Required": false,
+                "NumberAttributeConstraints": {
+                    "MinValue": "0"
+                }
+            }
+        ],
+        "AutoVerifiedAttributes": [
+            "email"
+        ],
+        "VerificationMessageTemplate": {
+            "DefaultEmailOption": "CONFIRM_WITH_CODE"
+        },
+        "MfaConfiguration": "OFF",
+        "EstimatedNumberOfUsers": 0,
+        "EmailConfiguration": {
+            "EmailSendingAccount": "COGNITO_DEFAULT"
+        },
+        "AdminCreateUserConfig": {
+            "AllowAdminCreateUserOnly": false,
+            "UnusedAccountValidityDays": 7
+        },
+        "Arn": "arn:aws:cognito-idp:us-east-2:012391247423:userpool/us-east-2_gbNYZLT2j"
+    }
+}
+rproque:~/environment $
+
+rproque:~/environment $ aws cognito-idp create-user-pool-client --user-pool-id us-east-2_gbNYZLT2j --client-name MysfitsUserPoolClient
+{
+    "UserPoolClient": {
+        "UserPoolId": "us-east-2_gbNYZLT2j",
+        "ClientName": "MysfitsUserPoolClient",
+        "ClientId": "21010e79s1vd0uc8jjedntkv4m",
+        "LastModifiedDate": 1595532995.554,
+        "CreationDate": 1595532995.554,
+        "RefreshTokenValidity": 30,
+        "AllowedOAuthFlowsUserPoolClient": false
+    }
+}
+rproque:~/environment $
+
+rproque:~ $ aws apigateway import-rest-api --parameters endpointConfigurationTypes=REGIONAL --body file://~/environment/aws-modern-application-workshop/module-4/aws-cli/api-swagger.json --fail-on-warnings
+{
+    "id": "1evyjmoibf",
+    "name": "MysfitsApi",
+    "createdDate": 1595534103,
+    "apiKeySource": "HEADER",
+    "endpointConfiguration": {
+        "types": [
+            "REGIONAL"
+        ]
+    }
+}
+rproque:~ $
+
+}
+rproque:~ $ aws apigateway create-deployment --rest-api-id 1evyjmoibf --stage-name prod
+{
+    "id": "m0ws47",
+    "createdDate": 1595534232
+}
+rproque:~ $

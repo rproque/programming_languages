@@ -1,0 +1,31 @@
+**************************************
+* Module 3: Store Mysfit Information *
+**************************************
+AWS Services:
+-DynamoDB: NoSQL Database
+
+Learning:
+
+1) Adding A NoSQL Database To Mythical Mysfits
+A: Create A DynamoDB Table
+example: aws dynamodb create-table --cli-input-json file://~/environment/aws-modern-application-workshop/module-3/aws-cli/dynamodb-table.json
+verify: aws dynamodb describe-table --table-name MysfitsTable
+scan items stored in table: aws dynamodb scan --table-name MysfitsTable
+B: Add Items To The DynamoDB Table
+example: aws dynamodb batch-write-item --request-items file://~/environment/aws-modern-application-workshop/module-3/aws-cli/populate-dynamodb.json
+verify: aws dynamodb scan --table-name MysfitsTable
+
+2) Commit Your First Real Code Change
+A: Copy The Updated Flask Service Code
+example: cp ~/environment/aws-modern-application-workshop/module-3/app/service/* ~/environment/MythicalMysfitsService-Repository/service/
+B: Copy The Updated Flask Service Code
+example:
+cd ~/environment/MythicalMysfitsService-Repository
+git add .
+git commit -m "Add new integration to DynamoDB."
+git push
+
+3) Update The Website Content in S3
+edit: ~/environment/aws-modern-application-workshop/module-3/web/index.html
+example: aws s3 cp --recursive ~/environment/aws-modern-application-workshop/module-3/web/ s3://your_bucket_name_here/
+aws s3 cp --recursive ~/environment/aws-modern-application-workshop/module-3/web/ s3://mmysfits/

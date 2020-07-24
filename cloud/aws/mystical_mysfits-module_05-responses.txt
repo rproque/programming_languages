@@ -1,0 +1,32 @@
+rproque:~/environment/MythicalMysfitsService-Repository (master) $ aws codecommit create-repository --repository-name MythicalMysfitsStreamingService-Repository
+{
+    "repositoryMetadata": {
+        "accountId": "012391247423",
+        "repositoryId": "f69e3c7c-7d08-4af0-9aa6-d73f50977fba",
+        "repositoryName": "MythicalMysfitsStreamingService-Repository",
+        "lastModifiedDate": 1595535744.868,
+        "creationDate": 1595535744.868,
+        "cloneUrlHttp": "https://git-codecommit.us-east-2.amazonaws.com/v1/repos/MythicalMysfitsStreamingService-Repository",
+        "cloneUrlSsh": "ssh://git-codecommit.us-east-2.amazonaws.com/v1/repos/MythicalMysfitsStreamingService-Repository",
+        "Arn": "arn:aws:codecommit:us-east-2:012391247423:MythicalMysfitsStreamingService-Repository"
+    }
+}
+rproque:~/environment/MythicalMysfitsService-Repository (master) $
+
+rproque:~/environment/MythicalMysfitsStreamingService-Repository (master) $ sam package --template-file ./real-time-streaming.yml --output-template-file ./transformed-streaming.yml --s3-bucket mmysfits-streaming
+
+        SAM CLI now collects telemetry to better understand customer needs.
+
+        You can OPT OUT and disable telemetry collection by setting the
+        environment variable SAM_CLI_TELEMETRY=0 in your shell.
+        Thanks for your help!
+
+        Learn More: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-telemetry.html
+
+Uploading to 2abfd6bff88bfa16b78fcb56b21ce459  2081600 / 2081600.0  (100.00%)
+
+Successfully packaged artifacts and wrote output template to file ./transformed-streaming.yml.
+Execute the following command to deploy the packaged template
+sam deploy --template-file /home/ec2-user/environment/MythicalMysfitsStreamingService-Repository/transformed-streaming.yml --stack-name <YOUR STACK NAME>
+
+rproque:~/environment/MythicalMysfitsStreamingService-Repository (master) $

@@ -1,0 +1,169 @@
+***************************************************
+* Module 2: Host Your Application On A Web Server *
+***************************************************
+AWS Services:
+-Fargate: Deployment option in Amazon Elastic Container Service (ECS) that
+allows you to deploy containers without managing any clusters or servers. For our Mythical
+Mysfits backend, we will use Python and create a Flask app in a Docker container behind a Network
+Load Balancer. These will form the microservice backend for the frontend website.
+
+Learning:
+-VPC: Virtual Private Cloud (Network)
+-IAM: Identity and Access Management
+--Permissions on ECS and containers
+-CloudFormation: IaaS
+--Programmatically provision resources declared in JSON/YAML files called CloudFormation Templates.
+--CloudFormation will define:
+---VPC, NAT Gateway, DynamoDB VPC Endpoint, Security Group, IAM Roles
+
+****************************************
+* Module 2A: Setup Core Infrastructure *
+****************************************
+1) Deploy CloudFormation Templates.
+-Located in /home/ec2-user/environment/aws-modern-application-workshop/module-2/cfn/core.yml
+-example: aws cloudformation create-stack --stack-name MythicalMysfitsCoreStack --capabilities CAPABILITY_NAMED_IAM --template-body file://~/environment/aws-modern-application-workshop/module-2/cfn/core.yml
+-check status: aws cloudformation describe-stacks --stack-name MythicalMysfitsCoreStack
+--Run the the describe-stacks command, until you see a status of "StackStatus": "CREATE_COMPLETE"
+
+************************************************
+* Module 2B: Deploy A Service With AWS Fargate *
+************************************************
+Create a Docker container image that contains all of the code and configuration required to
+run the Mythical Mysfits backend as a microservice API created with Flask. We will build the
+Docker container image within Cloud9 and then push it to the Amazon Elastic Container Registry,
+where it will be available to pull when we create our service using Fargate.
+
+1) Create a Flask Service
+A: Build A Docker Image
+example: docker build . -t REPLACE_ME_AWS_ACCOUNT_ID.dkr.ecr.REPLACE_ME_REGION.amazonaws.com/mythicalmysfits/service:latest
+docker build . -t 012391247423.dkr.ecr.us-east-2.amazonaws.com/mythicalmysfits/service:latest
+
+In ./DOCKERFILE you just need to change following lines:
+Replace line 4 by:
+RUN apt-get install -y python3-pip python-dev build-essential
+Replace line 5 by:
+RUN pip3 install --upgrade pip
+Replace line 10 by:
+RUN pip3 install -r ./requirements.txt
+Replace line 12 by:
+ENTRYPOINT ["python3"]
+
+B: Test The Service Locally
+verify:
+docker run -p 8080:8080 012391247423.dkr.ecr.us-east-2.amazonaws.com/mythicalmysfits/service:latest
+https://5a149bd3e48f4d73a53b8220412ad5f5.vfs.cloud9.us-east-2.amazonaws.com/mysfits
+***do this in the 'preview->preview running application' menu
+
+C: Push the Docker Image to Amazon ECR
+example: aws ecr create-repository --repository-name mythicalmysfits/service
+returns:
+{
+    "repository": {
+        "repositoryArn": "arn:aws:ecr:us-east-2:012391247423:repository/mythicalmysfits/service",
+        "registryId": "012391247423",
+        "repositoryName": "mythicalmysfits/service",
+        "repositoryUri": "012391247423.dkr.ecr.us-east-2.amazonaws.com/mythicalmysfits/service",
+        "createdAt": 1595461648.0,
+        "imageTagMutability": "MUTABLE",
+        "imageScanningConfiguration": {
+            "scanOnPush": false
+        }
+    }
+}
+
+Run the following command, which will return a login command to retrieve credentials for our Docker client
+and then automatically execute it (include the full command including the $ below). 'Login Succeeded' will
+be reported if the command is successful.
+example: $(aws ecr get-login --no-include-email)
+***yes, everything in example line
+
+push the image you created to the ECR repository
+example: docker push REPLACE_ME_WITH_DOCKER_IMAGE_TAG
+docker push 012391247423.dkr.ecr.us-east-2.amazonaws.com/mythicalmysfits/service:latest
+verify: aws ecr describe-images --repository-name mythicalmysfits/service
+
+2) Configure The Service Prerequisites in Amazon ECS
+A: Create An AWS Fargate Cluster
+example: aws ecs create-cluster --cluster-name MythicalMysfits-Cluster
+B: Create An AWS CloudWatch Logs Group
+example: aws logs create-log-group --log-group-name mythicalmysfits-logs
+C: Register An ECS Task Definition
+example: aws ecs register-task-definition --cli-input-json file://~/environment/aws-modern-application-workshop/module-2/aws-cli/task-definition.json
+***update task-definition.json as needed
+
+3) Enable A Load Balanced Fargate Service
+A: Create A Network Load Balancer
+example: aws elbv2 create-load-balancer --name mysfits-nlb --scheme internet-facing --type network --subnets REPLACE_ME_PUBLIC_SUBNET_ONE REPLACE_ME_PUBLIC_SUBNET_TWO > ~/environment/nlb-output.json
+aws elbv2 create-load-balancer --name mysfits-nlb --scheme internet-facing --type network --subnets subnet-0bd9c02f2d7c2beb6 subnet-0ae03a8a839fe4950 > ~/environment/nlb-output.json
+B: Create A Load Balander Target Group
+example: aws elbv2 create-target-group --name MythicalMysfits-TargetGroup --port 8080 --protocol TCP --target-type ip --vpc-id REPLACE_ME_VPC_ID --health-check-interval-seconds 10 --health-check-path / --health-check-protocol HTTP --healthy-threshold-count 3 --unhealthy-threshold-count 3 > ~/environment/target-group-output.json
+aws elbv2 create-target-group --name MythicalMysfits-TargetGroup --port 8080 --protocol TCP --target-type ip --vpc-id vpc-0e1387e0df48246cc --health-check-interval-seconds 10 --health-check-path / --health-check-protocol HTTP --healthy-threshold-count 3 --unhealthy-threshold-count 3 > ~/environment/target-group-output.json
+C: Create A Load Balancer Listener
+example: aws elbv2 create-listener --default-actions TargetGroupArn=REPLACE_ME_NLB_TARGET_GROUP_ARN,Type=forward --load-balancer-arn REPLACE_ME_NLB_ARN --port 80 --protocol TCP
+aws elbv2 create-listener --default-actions TargetGroupArn=arn:aws:elasticloadbalancing:us-east-2:012391247423:targetgroup/MythicalMysfits-TargetGroup/e3e358911cdea9b0,Type=forward --load-balancer-arn arn:aws:elasticloadbalancing:us-east-2:012391247423:loadbalancer/net/mysfits-nlb/f44913822a90afbd --port 80 --protocol TCP
+
+4) Create A Service With Fargate
+A: Create A Service Linked Role For ECS
+example: aws iam create-service-linked-role --aws-service-name ecs.amazonaws.com
+B: Create The Service
+example: aws ecs create-service --cli-input-json file://~/environment/aws-modern-application-workshop/module-2/aws-cli/service-definition.json
+***update service-definition.json as needed
+C: Test The Service
+http://mysfits-nlb-f44913822a90afbd.elb.us-east-2.amazonaws.com
+
+5) Update Mythical Mysfits To Call The NLB
+A: Replace the API Endpoint
+update var mysfitsApiEndpoint in ./module-2/web/index.html with url: http://mysfits-nlb-f44913822a90afbd.elb.us-east-2.amazonaws.com
+B: Upload To S3
+example: aws s3 cp ~/environment/aws-modern-application-workshop/module-2/web/index.html s3://INSERT-YOUR-BUCKET-NAME/index.html
+aws s3 cp ~/environment/aws-modern-application-workshop/module-2/web/index.html s3://mmysfits/index.html
+
+***********************************************************
+* Module 2C: Automate Deployments using AWS Code Services *
+***********************************************************
+1) Create The CI/CD Pipeline
+A: Create A S3 Bucket For Pipeline Artifacts And Set Policy
+example: aws s3 mb s3://REPLACE_ME_CHOOSE_ARTIFACTS_BUCKET_NAME
+aws s3 mb s3://mmysfits-artifacts
+Policy: Edit ~/environment/aws-modern-application-workshop/module-2/aws-cli/artifacts-bucket-policy.json
+example: aws s3api put-bucket-policy --bucket REPLACE_ME_ARTIFACTS_BUCKET_NAME --policy file://~/environment/aws-modern-application-workshop/module-2/aws-cli/artifacts-bucket-policy.json
+aws s3api put-bucket-policy --bucket mmysfits-artifacts --policy file://~/environment/aws-modern-application-workshop/module-2/aws-cli/artifacts-bucket-policy.json
+B: Create a CodeCommit Repository
+example: aws codecommit create-repository --repository-name MythicalMysfitsService-Repository
+C: Create a CodeBuild Project
+Edit ~/environment/aws-modern-application-workshop/module-2/aws-cli/code-build-project.json
+example: aws codebuild create-project --cli-input-json file://~/environment/aws-modern-application-workshop/module-2/aws-cli/code-build-project.json
+D: Create a CodePipeline Pipeline
+Edit ~/environment/aws-modern-application-workshop/module-2/aws-cli/code-pipeline.json
+example: aws codepipeline create-pipeline --cli-input-json file://~/environment/aws-modern-application-workshop/module-2/aws-cli/code-pipeline.json
+E: Enable Automated Access to ECR Image Repository
+Edit ~/environment/aws-modern-application-workshop/module-2/aws-cli/ecr-policy.json
+example: aws ecr set-repository-policy --repository-name mythicalmysfits/service --policy-text file://~/environment/aws-modern-application-workshop/module-2/aws-cli/ecr-policy.json
+
+2) Test The CI/CD Pipeline
+A: Using Git with AWS CodeCommit
+example:
+git config --global user.name "REPLACE_ME_WITH_YOUR_NAME"
+git config --global user.email REPLACE_ME_WITH_YOUR_EMAIL@example.com
+git config --global credential.helper '!aws codecommit credential-helper $@'
+git config --global credential.UseHttpPath true
+cd ~/environment/
+git clone https://git-codecommit.REPLACE_REGION.amazonaws.com/v1/repos/MythicalMysfitsService-Repository
+This will tell us that our repository is empty! Let's fix that by copying the application files into our repository directory using the following command:
+cp -r ~/environment/aws-modern-application-workshop/module-2/app/* ~/environment/MythicalMysfitsService-Repository/
+
+git config --global user.name "rroque"
+git config --global user.email reginald.p.roque@gmail.com
+git config --global credential.helper '!aws codecommit credential-helper $@'
+git config --global credential.UseHttpPath true
+cd ~/environment/
+git clone https://git-codecommit.us-east-2.amazonaws.com/v1/repos/MythicalMysfitsService-Repository
+This will tell us that our repository is empty! Let's fix that by copying the application files into our repository directory using the following command:
+cp -r ~/environment/aws-modern-application-workshop/module-2/app/* ~/environment/MythicalMysfitsService-Repository/
+
+B: Pushing A Code Change
+Edit: ~/environment/MythicalMysfitsService-Repository/service/mysfits-response.json
+cd ~/environment/MythicalMysfitsService-Repository/
+git add .
+git commit -m "I changed the age of one of the mysfits."
+git push
